@@ -8,6 +8,7 @@ interface Todo {
   id: number;
   name: string;
   i_status: Status;
+  documentId: string;
 }
 
 export default function Home() {
@@ -36,22 +37,21 @@ export default function Home() {
     }
   };
 
-  const deleteTodoItem = async (id: number) => {
-    if (confirm("Do you really want to delete this item?")) {
-      const a = await axios.delete(`http://localhost:1337/api/todos/${id}`);
-      console.log(a);
-      setTodos(todos.filter((_todo) => _todo.id !== id));
-    }
+  const deleteTodoItem = async (id: string) => {
+    const a = await axios.delete(`http://localhost:1337/api/todos/${id}`);
+    setTodos(todos.filter((_todo) => _todo.documentId !== id));
   };
 
-  const changeStatus = async (id: number, status: Status) => {
+  const changeStatus = async (id: string, status: Status) => {
     const result = await axios.put(`http://localhost:1337/api/todos/${id}`, {
-      i_status: status,
+      data: {
+        i_status: status,
+      },
     });
-    console.log(result);
-
     setTodos(
-      todos.map((_todo) => (_todo.id === id ? result?.data?.data : _todo))
+      todos.map((_todo) =>
+        _todo.documentId === id ? result?.data?.data : _todo
+      )
     );
   };
 
@@ -81,16 +81,18 @@ export default function Home() {
               .map((todo) => (
                 <li key={todo.id}>
                   <span>{todo.name} </span>
-                  <button onClick={() => changeStatus(todo.id, "todo")}>
+                  <button onClick={() => changeStatus(todo.documentId, "todo")}>
                     todo
                   </button>
-                  <button onClick={() => changeStatus(todo.id, "doing")}>
+                  <button
+                    onClick={() => changeStatus(todo.documentId, "doing")}
+                  >
                     doing
                   </button>
-                  <button onClick={() => changeStatus(todo.id, "done")}>
+                  <button onClick={() => changeStatus(todo.documentId, "done")}>
                     done
                   </button>
-                  <button onClick={() => deleteTodoItem(todo.id)}>
+                  <button onClick={() => deleteTodoItem(todo.documentId)}>
                     Delete
                   </button>
                 </li>
