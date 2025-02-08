@@ -11,7 +11,7 @@ export async function fetchTodos() {
 }
 
 export async function addTodo(name: string) {
-  const response = await axios.post("http://localhost:1337/api/todos", {
+  await axios.post("http://localhost:1337/api/todos", {
     data: { name, i_status: "todo" },
   });
   revalidatePath("/");
@@ -27,4 +27,10 @@ export async function changeStatus(id: string, status: Status) {
     data: { i_status: status },
   });
   revalidatePath("/");
+}
+
+export async function handleQuestions(answers: Record<number, number>) {
+  await axios.post("http://localhost:1337/api", {
+    data: answers,
+  });
 }
