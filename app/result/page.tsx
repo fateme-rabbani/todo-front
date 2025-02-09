@@ -1,25 +1,70 @@
+"use client";
+
 import {
   Box,
+  Button,
   FormControl,
   FormControlLabel,
   Radio,
   RadioGroup,
   Stack,
   Typography,
+  Card,
 } from "@mui/material";
 import { data } from "../data/questions";
+import { useRouter } from "next/navigation";
 
 export default function Result() {
+  const router = useRouter();
+
+  const handleRestartQuiz = () => {
+    localStorage.removeItem("quizFinished");
+    router.replace("/questions");
+  };
+
   return (
-    <>
-      <Stack alignItems="center" sx={{ mt: 2 }}>
-        <Typography variant="h4" fontWeight="bold">
-          نتایج:
+    <Stack sx={{ p: 5 }}>
+      <Stack
+        direction="row"
+        alignItems="center"
+        justifyContent="center"
+        sx={{
+          // backgroundColor: "#00A693",
+          backgroundColor: "#1976D2",
+
+          color: "white",
+          borderRadius: "12px",
+          py: 2,
+          mb: 3,
+        }}
+      >
+        <Typography variant="h3" fontWeight="bold">
+          نتایج آزمون
         </Typography>
       </Stack>
-      <FormControl sx={{ width: "100%", p: 5 }}>
+
+      <Card
+        sx={{
+          p: 2,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          borderRadius: "12px",
+          backgroundColor: "#f5f5f5",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h5" fontWeight="bold">
+          ⭐ امتیاز شما: <span style={{ color: "#1976D2" }}>10</span>
+        </Typography>
+        <Button variant="contained" color="primary">
+          مرحله‌ی بعد
+        </Button>
+      </Card>
+
+      <FormControl sx={{ width: "100%" }}>
         {data.map((item, index) => (
-          <Box key={index} sx={{ mb: 2 }}>
+          <Card key={index} sx={{ mb: 3, p: 2, borderRadius: "12px" }}>
             <span>
               {index + 1}. {item.question}
             </span>
@@ -74,10 +119,20 @@ export default function Result() {
                 );
               })}
             </RadioGroup>
-          </Box>
+          </Card>
         ))}
       </FormControl>
-      <a href="/questions">بازگشت</a>
-    </>
+
+      <Box textAlign="center" mt={3}>
+        <Button
+          variant="outlined"
+          color="secondary"
+          href="/questions"
+          onClick={handleRestartQuiz}
+        >
+          🔄 بازگشت به سوالات
+        </Button>
+      </Box>
+    </Stack>
   );
 }

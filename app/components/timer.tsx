@@ -4,15 +4,21 @@ import { Typography, Box } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { initialTimer } from "../data/questions";
+import { handleQuestions } from "../todoActions";
 
-export default function Timer() {
+export default function Timer({
+  answers,
+}: {
+  answers: { [key: number]: number };
+}) {
   const [timer, setTimer] = useState(initialTimer);
   const router = useRouter();
 
   useEffect(() => {
     if (timer === 0) {
+      localStorage.setItem("quizFinished", "true");
       router.replace("/result");
-      return;
+      handleQuestions(answers);
     }
 
     const interval = setInterval(() => {
@@ -37,7 +43,9 @@ export default function Timer() {
         zIndex: 1000,
       }}
     >
-      <Typography variant="h6">⏳ زمان باقی‌مانده: {timer} ثانیه</Typography>
+      <Typography variant="h6">
+        ⏳ زمان باقی‌مانده: {Math.max(timer, 0)} ثانیه
+      </Typography>
     </Box>
   );
 }
